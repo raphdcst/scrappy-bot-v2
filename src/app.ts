@@ -1,3 +1,5 @@
 export * from "discord.js"
 export * from "./app.native.js"
+export * from "./namespaces/fetchCookie.js"
 export * as discord from "discord.js"
+export * as fetchCookie from "./namespaces/fetchCookie.js"

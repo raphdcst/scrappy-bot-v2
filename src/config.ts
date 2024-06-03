@@ -5,6 +5,9 @@ export const config: app.Scrap<app.Config> = {
   getPrefix() {
     return process.env.BOT_PREFIX!
   },
+  fetchCookie() {
+    return app.fetchCookie()
+  },
   client: {
     intents: [
       app.IntentsBitField.Flags.Guilds,
