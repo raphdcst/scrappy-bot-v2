@@ -1,6 +1,5 @@
-import axios from "axios";
-import { AxiosResponse } from "axios";
-import randomUseragent from "random-useragent";
+import axios, { AxiosResponse } from "axios"
+import randomUseragent from "random-useragent"
 
 // Fetch the cookies from the vinted website to authenticate the requests
 export async function fetchCookie(domain: string = "fr"): Promise<string> {
@@ -35,11 +34,9 @@ export async function fetchCookie(domain: string = "fr"): Promise<string> {
 
   const requiredCookies = ["anon_id", "_vinted_fr_session"];
 
-  const cookieHeader = requiredCookies.reduce((acc, cookie) => {
+  return requiredCookies.reduce((acc, cookie) => {
     return parsedCookies[cookie]
       ? `${acc}${cookie}=${parsedCookies[cookie]}; `
       : acc;
   }, "");
-
-  return cookieHeader;
-};
+}
