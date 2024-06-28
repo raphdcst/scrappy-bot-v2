@@ -1,37 +1,39 @@
 import * as app from "#app"
+import type { Config } from "#app"
+import { Options } from "discord.js"
 
-export const config: app.Scrap<app.Config> = {
+const config: Config = {
   ignoreBots: true,
   getPrefix() {
     return process.env.BOT_PREFIX!
   },
   client: {
     intents: [
-      app.IntentsBitField.Flags.Guilds,
-      app.IntentsBitField.Flags.GuildMembers,
-      app.IntentsBitField.Flags.GuildModeration,
-      app.IntentsBitField.Flags.GuildEmojisAndStickers,
-      app.IntentsBitField.Flags.GuildIntegrations,
-      app.IntentsBitField.Flags.GuildWebhooks,
-      app.IntentsBitField.Flags.GuildInvites,
-      app.IntentsBitField.Flags.GuildVoiceStates,
-      app.IntentsBitField.Flags.GuildPresences,
-      app.IntentsBitField.Flags.GuildMessages,
-      app.IntentsBitField.Flags.GuildMessageReactions,
-      app.IntentsBitField.Flags.GuildMessageTyping,
-      app.IntentsBitField.Flags.DirectMessages,
-      app.IntentsBitField.Flags.DirectMessageReactions,
-      app.IntentsBitField.Flags.DirectMessageTyping,
-      app.IntentsBitField.Flags.MessageContent,
+      "Guilds",
+      "GuildMembers",
+      "GuildModeration",
+      "GuildEmojisAndStickers",
+      "GuildIntegrations",
+      "GuildWebhooks",
+      "GuildInvites",
+      "GuildVoiceStates",
+      "GuildPresences",
+      "GuildMessages",
+      "GuildMessageReactions",
+      "GuildMessageTyping",
+      "DirectMessages",
+      "DirectMessageReactions",
+      "DirectMessageTyping",
+      "MessageContent",
     ],
-    makeCache: app.Options.cacheWithLimits({
-      ...app.Options.DefaultMakeCacheSettings,
+    makeCache: Options.cacheWithLimits({
+      ...Options.DefaultMakeCacheSettings,
 
       // don't cache reactions
       ReactionManager: 0,
     }),
     sweepers: {
-      ...app.Options.DefaultSweeperSettings,
+      ...Options.DefaultSweeperSettings,
       messages: {
         // every day
         interval: 1000 * 60 * 60 * 24,
@@ -42,3 +44,5 @@ export const config: app.Scrap<app.Config> = {
     },
   },
 }
+
+export default config

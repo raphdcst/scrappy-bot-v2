@@ -4,9 +4,9 @@ import discord from "discord.js"
 import yargsParser from "yargs-parser"
 import regexParser from "regex-parser"
 
-import * as util from "./util.js"
-import * as logger from "./logger.js"
-import * as command from "./command.js"
+import * as util from "./util.ts"
+import * as logger from "./logger.ts"
+import * as command from "./command.ts"
 
 type _item<Items extends readonly any[], K extends string> = Extract<
   Items[number],
@@ -396,8 +396,8 @@ export async function resolveType(
           } else {
             const search = (channel: discord.Channel) => {
               return (
-                "name" in channel && // @ts-ignore
-                channel.name.toLowerCase().includes(baseValue.toLowerCase())
+                "name" in channel &&
+                channel.name?.toLowerCase().includes(baseValue.toLowerCase())
               )
             }
             let channel: discord.Channel | undefined
@@ -447,7 +447,7 @@ export async function resolveType(
       case "message":
         if (baseValue) {
           const match =
-            /^https?:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)$/.exec(
+            /^https?:\/\/(?:www\.)?(?:ptb\.|canary\.)?(?:discord|discordapp)\.com\/channels\/\d+\/(\d+)\/(\d+)$/.exec(
               baseValue,
             )
           if (match) {

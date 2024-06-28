@@ -1,6 +1,6 @@
 {
   "name": "scrappy-bot-v2",
-  "version": "v7.0.0-Senchu",
+  "version": "v8.0.0-Capi",
   "author": "ghom",
   "description": "Discord bot in TypeScript",
   "main": "dist/index.js",
@@ -9,7 +9,13 @@
   "imports": {
     "#app": "./dist/app.js",
     "#app/*": "./dist/*",
-    "#tables/*": "./dist/tables/*"
+    "#tables/*": "./dist/tables/*",
+    "#env": "./dist/app/env.js",
+    "#config": "./dist/config.js",
+    "#client": "./dist/app/client.js",
+    "#logger": "./dist/app/logger.js",
+    "#database": "./dist/app/database.js",
+    "#src/*": "./dist/*"
   },
   "scripts": {
     "build": "gulp build",
@@ -19,7 +25,9 @@
     "format": "prettier --write src tests",
     "update": "gulp update",
     "readme": "gulp readme",
-    "test": "tsc --noEmit && npm run start.test"
+    "test": "npm run lint && tsc --noEmit && npm run start.test",
+    "bot": "npx @ghom/bot.ts-cli",
+    "lint": "eslint src/**/*.ts --fix"
   },
   "prettier": {
     "semi": false,
@@ -37,7 +45,7 @@
   "dependencies": {
     "@discordjs/rest": "^0.5.0",
     "@ghom/handler": "^3.1.0",
-    "@ghom/logger": "^1.2.0",
+    "@ghom/logger": "^2.0.1",
     "@ghom/orm": "^1.7.0",
     "axios": "^1.7.2",
     "boxen": "^7.0.0",
@@ -49,6 +57,7 @@
     "figlet": "^1.5.2",
     "ghom-eval": "^1.1.3",
     "ghom-prettify": "^3.0.0",
+    "gulp-replace": "^1.1.4",
     "knex": "^3.0.1",
     "pg": "latest",
     "prettier": "^3.2.5",
@@ -57,11 +66,13 @@
     "simple-git": "^3.24.0",
     "tims": "^2.1.0",
     "types-package-json": "^2.0.39",
-    "yargs-parser": "^21.0.1"
+    "yargs-parser": "^21.0.1",
+    "del": "^6.1.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@esbuild/linux-x64": "^0.20.1",
-    "@ghom/bot.ts-cli": "^7.1.0",
+    "@ghom/bot.ts-cli": "^8.0.0",
     "@types/fancy-log": "^2.0.0",
     "@types/figlet": "^1.5.4",
     "@types/gulp-filter": "^3.0.34",
@@ -84,7 +95,13 @@
     "gulp-rename": "^2.0.0",
     "nodemon": "^2.0.19",
     "typescript": "^5.4.0-beta",
-    "vinyl-paths": "^4.0.0"
+    "vinyl-paths": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.29.1",
+    "gulp-replace": "^1.1.4"
   },
   "engines": {
     "node": ">=20.x.x",

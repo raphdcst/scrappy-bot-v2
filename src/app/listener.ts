@@ -4,12 +4,12 @@ import url from "url"
 import discord from "discord.js"
 import path from "path"
 import chalk from "chalk"
-import apiTypes from "discord-api-types/v8.js"
+import apiTypes from "discord-api-types/v8"
 
 import * as handler from "@ghom/handler"
 
-import * as logger from "./logger.js"
-import * as client from "./client.js"
+import logger from "#logger"
+import client from "#client"
 
 const readyListeners = new discord.Collection<Listener<"ready">, boolean>()
 
@@ -22,28 +22,23 @@ export const listenerHandler = new handler.Handler(
       return file.default as Listener<any>
     },
     onLoad: async (filepath, listener) => {
-      const clientInstance = client.ClientSingleton.get()
-
       if (listener.event === "ready") readyListeners.set(listener, false)
 
-      clientInstance[listener.once ? "once" : "on"](
-        listener.event,
-        async (...args) => {
-          try {
-            await listener.run(...args)
+      client[listener.once ? "once" : "on"](listener.event, async (...args) => {
+        try {
+          await listener.run(...args)
 
-            if (listener.event === "ready") {
-              readyListeners.set(listener, true)
+          if (listener.event === "ready") {
+            readyListeners.set(listener, true)
 
-              if (readyListeners.every((launched) => launched)) {
-                clientInstance.emit("afterReady", ...args)
-              }
+            if (readyListeners.every((launched) => launched)) {
+              client.emit("afterReady", ...args)
             }
-          } catch (error: any) {
-            logger.error(error, filepath, true)
           }
-        },
-      )
+        } catch (error: any) {
+          logger.error(error, filepath, true)
+        }
+      })
 
       const isNative = filepath.includes(".native.")
 

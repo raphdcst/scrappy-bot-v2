@@ -2,12 +2,12 @@
 
 import discord from "discord.js"
 
-import * as logger from "./logger.js"
-import * as config from "./config.js"
-import * as util from "./util.js"
+import config from "#config"
+
+import * as logger from "./logger.ts"
+import * as util from "./util.ts"
 
 import { filename } from "dirname-filename-esm"
-
 const __filename = filename(import.meta)
 
 export type PaginatorKey = "previous" | "next" | "start" | "end"
@@ -316,6 +316,6 @@ export class StaticPaginator extends Paginator {
 }
 
 export async function initPagination() {
-  const { paginatorEmojis } = config.getConfig()
+  const { paginatorEmojis } = config
   if (paginatorEmojis) Paginator.defaultEmojis = paginatorEmojis
 }

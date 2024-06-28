@@ -8,9 +8,12 @@ import path from "path"
 import chalk from "chalk"
 
 import * as handler from "@ghom/handler"
-import * as logger from "./logger.js"
-import * as config from "./config.js"
-import * as util from "./util.js"
+
+import env from "#env"
+import logger from "#logger"
+import config from "#config"
+
+import * as util from "./util.ts"
 
 import { filename } from "dirname-filename-esm"
 
@@ -118,11 +121,7 @@ export interface ISlashCommand {
   options: ISlashCommandOptions
 }
 
-export interface ISlashCommandInteraction
-  extends Omit<
-    discord.CommandInteraction,
-    "guild" | "guildId" | "channel" | "options"
-  > {
+export interface ISlashCommandInteraction {
   base: discord.CommandInteraction
   guild?: discord.Guild
   guildId?: string
@@ -257,13 +256,13 @@ export function validateSlashCommand(command: ISlashCommand) {
 }
 
 export async function registerSlashCommands(guildId?: string) {
-  const api = new rest.REST({ version: "10" }).setToken(process.env.BOT_TOKEN!)
+  const api = new rest.REST({ version: "10" }).setToken(env.BOT_TOKEN)
 
   try {
     const data = (await api.put(
       guildId
-        ? v10.Routes.applicationGuildCommands(process.env.BOT_ID!, guildId)
-        : v10.Routes.applicationCommands(process.env.BOT_ID!),
+        ? v10.Routes.applicationGuildCommands(env.BOT_ID, guildId)
+        : v10.Routes.applicationCommands(env.BOT_ID),
       {
         body: slashCommands.map((cmd) => cmd.builder.toJSON()),
       },
@@ -283,20 +282,15 @@ export async function prepareSlashCommand(
   interaction: discord.CommandInteraction,
   command: ISlashCommand,
 ): Promise<ISlashCommandInteraction | discord.EmbedBuilder> {
-  // @ts-ignore
   const output: ISlashCommandInteraction = {
     base: interaction,
-    ...interaction,
     guild: undefined,
     guildId: undefined,
     channel: interaction.channel!,
     options: {},
   }
 
-  if (
-    command.options.botOwnerOnly &&
-    interaction.user.id !== process.env.BOT_OWNER
-  )
+  if (command.options.botOwnerOnly && interaction.user.id !== env.BOT_OWNER)
     return new discord.EmbedBuilder()
       .setColor("Red")
       .setDescription("This command can only be used by the bot owner")
@@ -369,7 +363,7 @@ export async function prepareSlashCommand(
     for (const name in command.options.options) {
       const option = command.options.options[name]
 
-      let value = interaction.options.get(name) ?? option.default ?? null
+      const value = interaction.options.get(name) ?? option.default ?? null
 
       if (option.required && value === null)
         return new discord.EmbedBuilder()
@@ -395,9 +389,9 @@ export async function sendSlashCommandDetails(
   interaction: ISlashCommandInteraction,
   computed: discord.ApplicationCommand,
 ) {
-  const { detailSlashCommand } = config.getConfig()
+  const { detailSlashCommand } = config
 
-  interaction.reply(
+  interaction.base.reply(
     detailSlashCommand
       ? await detailSlashCommand(interaction, computed)
       : {

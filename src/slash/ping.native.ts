@@ -4,8 +4,8 @@ export default new app.SlashCommand({
   name: "ping",
   description: "Get the bot ping",
   run(interaction) {
-    return interaction.reply({
-      content: `Pong! \`${app.ClientSingleton.get().ws.ping}ms\``,
+    return interaction.base.reply({
+      content: `Pong! \`${app.client.ws.ping}ms\``,
       ephemeral: true,
     })
   },

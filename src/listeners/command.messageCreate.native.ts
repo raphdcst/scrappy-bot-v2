@@ -1,14 +1,13 @@
 // system file, please don't modify it
 
 import * as app from "#app"
+import config from "#config"
 import yargsParser from "yargs-parser"
 
 const listener: app.Listener<"messageCreate"> = {
   event: "messageCreate",
   description: "Handle messages for commands",
   async run(message) {
-    const config = app.getConfig()
-
     if (config.ignoreBots && message.author.bot) return
 
     if (!app.isNormalMessage(message)) return
@@ -25,7 +24,7 @@ const listener: app.Listener<"messageCreate"> = {
         .catch()
 
     message.usedAsDefault = false
-    message.isFromBotOwner = message.author.id === process.env.BOT_OWNER!
+    message.isFromBotOwner = message.author.id === app.env.BOT_OWNER
 
     app.emitMessage(message.channel, message)
     app.emitMessage(message.author, message)
@@ -61,7 +60,7 @@ const listener: app.Listener<"messageCreate"> = {
     if (
       key !== "turn" &&
       !app.cache.ensure<boolean>("turn", true) &&
-      message.author.id !== process.env.BOT_OWNER
+      message.author.id !== app.env.BOT_OWNER
     )
       return
 

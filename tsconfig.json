@@ -13,10 +13,16 @@
     "esModuleInterop": true,
     "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
     "paths": {
       "#app": ["./src/app.ts"],
-      "#app/*": ["./src/*"],
-      "#tables/*": ["./src/tables/*"],
+      "#config": ["./src/config.ts"],
+      "#env": ["./src/app/env.ts"],
+      "#client": ["./src/app/client.ts"],
+      "#logger": ["./src/app/logger.ts"],
+      "#database": ["./src/app/database.ts"],
+      "#src/*": ["./src/*"],
+      "#tables/*": ["./src/tables/*"]
     }
   },
 }
