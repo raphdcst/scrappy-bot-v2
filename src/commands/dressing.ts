@@ -20,6 +20,6 @@ export default new app.Command({
 
     const id = message.args.id
 
-    return app.processRequest(msg, id)
+    return app.fetchDressing(msg, id)
   }
 })

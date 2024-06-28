@@ -87,3 +87,46 @@ export async function vintedSearch(url: string, cookie: string): Promise<any |vo
   }
 }
 
+export async function fetchDressing(message: app.Message<true>, id: string) {
+
+  const cookie = await app.fetchCookie()
+
+  if (!cookie) return;
+
+  const url = `https://www.vinted.fr/api/v2/users/${id}/items`
+
+  const data = (await app.vintedSearch(url, cookie))
+
+  if (!data || data.length === 0) {
+      app.sendLogger.error(`No item found in ${id} dressing`)
+
+      return message.reply(`No item found in ${id} dressing !`)
+  }
+
+  const items = data.items as app.Item[]
+
+  await app.postArticles(message, items)
+
+}
+
+export async function findUser(message: app.Message<true>, name: string) {
+
+  const cookie = await app.fetchCookie()
+
+  if (!cookie) return;
+
+  const url = `https://www.vinted.fr/api/v2/users?page=1&per_page=36&search_text=${name}`
+
+  const data = (await app.vintedSearch(url, cookie))
+
+  if (!data || data.length === 0) {
+      app.sendLogger.error(`No user matching "${name}"`)
+
+      return message.reply(`No user matching "${name}"`)
+  }
+
+  const users = data.users as app.VintedUser[]
+
+  await app.postUsers(message, users)
+
+}

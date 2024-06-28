@@ -11,10 +11,17 @@ export type EmbedColor = keyof typeof EmbedColors
 
 export type itemEmbedOptions = {
     item: app.Item
+    mesage?: app.Message
     bot?: app.ClientUser
     color?: EmbedColor
 }
 
+export type userEmbedOptions = {
+    user: app.VintedUser
+    message: app.Message
+    bot?: app.ClientUser
+    color?: EmbedColor
+}
 
 export function createItemEmbed(options: itemEmbedOptions): app.APIEmbed {
 
@@ -54,4 +61,24 @@ export function createItemEmbed(options: itemEmbedOptions): app.APIEmbed {
 
 
     return itemEmbed
+}
+
+
+export function createUserEmbed(options: userEmbedOptions): app.APIEmbed {
+
+    const userEmbed = {
+        title: `User founded : **${options.user.login}**`,
+        description: app.codeBlock(`${options.user.id}`),
+        color: EmbedColors[options?.color || 'INFO'],
+        timestamp: new Date().toISOString(),
+        thumbnail: {
+          url: options.user.photo?.thumbnails[3]?.url,
+        },
+        footer: {
+          text: options.message.author.username,
+          icon_url: options.message.author.avatarURL() || undefined,
+        },
+      };
+
+    return userEmbed
 }
