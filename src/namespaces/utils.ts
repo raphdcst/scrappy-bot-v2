@@ -59,23 +59,48 @@ export async function postArticles(message: Message<true>, items: app.Item[]) {
         return app.sendLogger.error(err)
     }
 
-    const embeds = Object.values(items).forEach(async (value) => {
+    Object.values(items).forEach(async (value) => {
 
-        const embed = app.createItemEmbed({ item: value })
+        const embed = app.createItemEmbed({ item: value });
 
         await channel.send({ embeds: [embed] })
             .then(() => {
 
-                return app.sendLogger.success(`Found "${value.title}" in ${value.user.login} and sent it in "${channel.name}"`)
+                return app.sendLogger.success(`Found "${value.title}" in ${value.user.login} and sent it in "${channel.name}"`);
 
             })
             .catch((e) => {
 
-                const err = e as app.DiscordAPIError
+                const err = e as app.DiscordAPIError;
 
-                return app.sendLogger.error(`${err.name} Failed to send "${value.title}" in ${channel.name}`)
+                return app.sendLogger.error(`${err.name} Failed to send "${value.title}" in ${channel.name}`);
 
             })
 
     })
+
+    return app.sendLogger.log(`Task finished : sent ${items.length} items in "${channel.name}" in "${message.guild.name} (${message.guild.id})`)
+
+}
+
+export async function processRequest(message: Message<true>, id: string) {
+
+    const cookie = await app.fetchCookie()
+
+    if (!cookie) return;
+
+    const url = `https://www.vinted.fr/api/v2/users/${id}/items`
+
+    const data = (await app.vintedSearch(url, cookie))
+
+    if (!data || data.length === 0) {
+        app.sendLogger.error(`No item found in ${id} dressing`)
+
+        return message.reply(`No item found in ${id} dressing !`)
+    }
+
+    const items = data.items as app.Item[]
+
+    await postArticles(message, items)
+
 }

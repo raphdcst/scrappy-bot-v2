@@ -7,7 +7,7 @@ export default new app.Command({
   positional: [
     {
       name: "id",
-      type: "number",
+      type: "string",
       description: "The id of the dresing checked user",
       required: true,
       missingErrorMessage: "Please provide the user id of the wanted dressing !"
@@ -20,6 +20,6 @@ export default new app.Command({
 
     const id = message.args.id
 
-    return message.reply(`${id}`)
+    return app.processRequest(msg, id)
   }
 })
