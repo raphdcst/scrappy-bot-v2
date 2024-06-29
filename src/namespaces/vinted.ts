@@ -105,7 +105,7 @@ export async function fetchDressing(message: app.Message<true>, id: string) {
 
   const items = data.items as app.Item[]
 
-  await app.postArticles(message, items)
+  await app.postItems(message, items)
 
 }
 

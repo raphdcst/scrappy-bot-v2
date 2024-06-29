@@ -1,4 +1,3 @@
-import * as app from "#app"
 import type { Config } from "#app"
 import { Options } from "discord.js"
 

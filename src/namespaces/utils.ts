@@ -47,7 +47,47 @@ export async function checkChannel(message: Message<true>, name: string): Promis
     return channels
 }
 
-export async function postArticles(message: Message<true>, items: app.Item[]) {
+export async function postItem(channel: app.TextChannel, item: app.Item) {
+
+    const embed = app.createItemEmbed({ item: item });
+
+        await channel.send({ embeds: [embed] })
+            .then(() => {
+
+                return app.sendLogger.success(`Found "${item.title}" in ${item.user.login} and sent it in "${channel.name}"`);
+
+            })
+            .catch((e) => {
+
+                const err = e as app.DiscordAPIError;
+
+                return app.sendLogger.error(`${err.name} Failed to send "${item.title}" in ${channel.name}`);
+
+            })
+    
+}
+
+export async function postUser(message: Message<true>, user: app.VintedUser, channel: app.TextChannel | app.GuildTextBasedChannel) {
+
+    const embed = app.createUserEmbed({ user: user, message: message });
+
+        await channel.send({ embeds: [embed] })
+            .then(() => {
+
+                return app.sendLogger.success(`Found "${user.real_name}" and sent it in "${channel.name}"`);
+
+            })
+            .catch((e) => {
+
+                const err = e as app.DiscordAPIError;
+
+                return app.sendLogger.error(`${err.name} Failed to send "${user.real_name}" in ${channel.name}`);
+
+            })
+    
+}
+
+export async function postItems(message: Message<true>, items: app.Item[]) {
 
     const parsedName = parseName(items[0].user?.login);
 
@@ -61,21 +101,7 @@ export async function postArticles(message: Message<true>, items: app.Item[]) {
 
     Object.values(items).forEach(async (value) => {
 
-        const embed = app.createItemEmbed({ item: value });
-
-        await channel.send({ embeds: [embed] })
-            .then(() => {
-
-                return app.sendLogger.success(`Found "${value.title}" in ${value.user.login} and sent it in "${channel.name}"`);
-
-            })
-            .catch((e) => {
-
-                const err = e as app.DiscordAPIError;
-
-                return app.sendLogger.error(`${err.name} Failed to send "${value.title}" in ${channel.name}`);
-
-            })
+        await postItem(channel, value)
 
     })
 
@@ -89,21 +115,7 @@ export async function postUsers(message: Message<true>, users: app.VintedUser[])
 
     Object.values(users).forEach(async (value) => {
 
-        const embed = app.createUserEmbed({ user: value, message: message });
-
-        await channel.send({ embeds: [embed] })
-            .then(() => {
-
-                return app.sendLogger.success(`Found "${value.real_name}" and sent it in "${channel.name}"`);
-
-            })
-            .catch((e) => {
-
-                const err = e as app.DiscordAPIError;
-
-                return app.sendLogger.error(`${err.name} Failed to send "${value.real_name}" in ${channel.name}`);
-
-            })
+        await postUser(message, value, channel)
 
     })
 
