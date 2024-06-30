@@ -8,26 +8,26 @@ export async function fetchCookie(domain: string = "fr"): Promise<string | void>
   if (!userAgent) {
     return app.userAgentLogger.error('Failed to generate a random user agent')
   }
-  
+
   app.userAgentLogger.success(`Created a new random user agent : ${userAgent}`)
-  
+
   const response: AxiosResponse = await axios.get(`https://vinted.${domain}/catalog`, {
     headers: { "user-agent": userAgent },
   });
-  
+
   if (response.status !== 200) {
     return app.HTTPLogger.error(`HTTP error ! status: ${response.status}`)
   }
 
   app.HTTPLogger.success(`Server answered with ${response.status} status`)
-  
+
   const sessionCookies = response.headers["set-cookie"];
   if (!sessionCookies) {
     return app.HTTPLogger.error(`Could not find set-cookie headers in the response`)
   }
-  
+
   app.HTTPLogger.success(`Found set-headers cookie`)
-  
+
   const parsedCookies: { [key: string]: string } = Object.fromEntries(
     sessionCookies.flatMap((cookieHeader) =>
       cookieHeader.split(";").map((cookie) =>
@@ -37,7 +37,7 @@ export async function fetchCookie(domain: string = "fr"): Promise<string | void>
           .map((part) => part.trim())
       )
     )
-  );
+  )
 
   const requiredCookies = ["anon_id", "_vinted_fr_session"];
 
@@ -49,7 +49,7 @@ export async function fetchCookie(domain: string = "fr"): Promise<string | void>
 }
 
 
-export async function vintedSearch(url: string, cookie: string): Promise<any |void> {
+export async function vintedSearch(url: string, cookie: string): Promise<any | void> {
   try {
     const userAgent: string | undefined = randomUseragent.getRandom();
     if (!userAgent) {
@@ -80,7 +80,7 @@ export async function vintedSearch(url: string, cookie: string): Promise<any |vo
     return response.data;
 
   } catch (e) {
-    
+
     const err = e as Error
 
     return app.fetchLogger.error(`${err.name} | Failed to fetch url (${url})`)
@@ -97,13 +97,13 @@ export async function fetchDressing(message: app.Message<true>, id: string) {
 
   const data = (await app.vintedSearch(url, cookie))
 
-  if (!data || data.length === 0) {
-      app.sendLogger.error(`No item found in ${id} dressing`)
-
-      return message.reply(`No item found in ${id} dressing !`)
-  }
-
   const items = data.items as app.Item[]
+
+  if (!items || items.length === 0) {
+    app.sendLogger.error(`No item found in ${id} dressing`)
+
+    return message.reply(`No item found in ${id} dressing !`)
+  }
 
   await app.postItems(message, items)
 
@@ -111,22 +111,30 @@ export async function fetchDressing(message: app.Message<true>, id: string) {
 
 export async function findUser(message: app.Message<true>, name: string) {
 
+  await message.reply(`Searching for **${name}** in the Vinted database...`)
+
   const cookie = await app.fetchCookie()
 
-  if (!cookie) return;
+  if (!cookie) return app.fetchLogger.error('Error during cookie parsing');
 
   const url = `https://www.vinted.fr/api/v2/users?page=1&per_page=36&search_text=${name}`
 
   const data = (await app.vintedSearch(url, cookie))
 
-  if (!data || data.length === 0) {
-      app.sendLogger.error(`No user matching "${name}"`)
-
-      return message.reply(`No user matching "${name}"`)
-  }
-
   const users = data.users as app.VintedUser[]
 
+  if (!users || users.length === 0) {
+    app.sendLogger.warn(`No user matching "${name}"`)
+
+    return message.reply(`No user matching **${name}**`)
+  }
+
   await app.postUsers(message, users)
+
+  if (users.length === 1) {
+    return await message.reply(`Found **${users.length}** user in Vinted database !`)
+  }
+
+  return await message.reply(`Found **${users.length}** users in Vinted database !`)
 
 }

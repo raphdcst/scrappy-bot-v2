@@ -51,40 +51,40 @@ export async function postItem(channel: app.TextChannel, item: app.Item) {
 
     const embed = app.createItemEmbed({ item: item });
 
-        await channel.send({ embeds: [embed] })
-            .then(() => {
+    await channel.send({ embeds: [embed] })
+        .then(() => {
 
-                return app.sendLogger.success(`Found "${item.title}" in ${item.user.login} and sent it in "${channel.name}"`);
+            return app.sendLogger.success(`Sent "${item.title}" from "${item.user.login}" dressing in "${channel.name}"`);
 
-            })
-            .catch((e) => {
+        })
+        .catch((e) => {
 
-                const err = e as app.DiscordAPIError;
+            const err = e as app.DiscordAPIError;
 
-                return app.sendLogger.error(`${err.name} Failed to send "${item.title}" in ${channel.name}`);
+            return app.sendLogger.error(`${err.name} Failed to send "${item.title}" in ${channel.name}`);
 
-            })
-    
+        })
+
 }
 
 export async function postUser(message: Message<true>, user: app.VintedUser, channel: app.TextChannel | app.GuildTextBasedChannel) {
 
     const embed = app.createUserEmbed({ user: user, message: message });
 
-        await channel.send({ embeds: [embed] })
-            .then(() => {
+    await channel.send({ embeds: [embed] })
+        .then(() => {
 
-                return app.sendLogger.success(`Found "${user.real_name}" and sent it in "${channel.name}"`);
+            return app.sendLogger.success(`Sent "${user.login}" in "${channel.name}"`);
 
-            })
-            .catch((e) => {
+        })
+        .catch((e) => {
 
-                const err = e as app.DiscordAPIError;
+            const err = e as app.DiscordAPIError;
 
-                return app.sendLogger.error(`${err.name} Failed to send "${user.real_name}" in ${channel.name}`);
+            return app.sendLogger.error(`${err.name} Failed to send "${user.login}" in ${channel.name}`);
 
-            })
-    
+        })
+
 }
 
 export async function postItems(message: Message<true>, items: app.Item[]) {
@@ -105,7 +105,11 @@ export async function postItems(message: Message<true>, items: app.Item[]) {
 
     })
 
-    return app.sendLogger.log(`Task finished : sent ${items.length} items in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
+    if (items.length === 1) {
+        return app.sendLogger.success(`Task finished : found ${items.length} item. Sending in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
+    }
+
+    return app.sendLogger.success(`Task finished : found ${items.length} items. Sending in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
 
 }
 
@@ -113,12 +117,20 @@ export async function postUsers(message: Message<true>, users: app.VintedUser[])
 
     const channel = message.channel
 
-    Object.values(users).forEach(async (value) => {
+    Object.values(users).slice(0, 10).forEach(async (value) => {
 
         await postUser(message, value, channel)
 
     })
 
-    return app.sendLogger.log(`Task finished : sent ${users.length} items in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
+    if (users.length === 1) {
+        return app.sendLogger.success(`Task finished : found ${users.length} user. Sending in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
+    }
+
+    if (users.length > 10) {
+        return app.sendLogger.success(`Task finished : found ${users.length} users. Sending firsts 10 users in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
+    }
+
+    return app.sendLogger.success(`Task finished : found ${users.length} users. Sending in "${channel.name}" in "${message.guild.name}" (${message.guild.id})`)
 
 }

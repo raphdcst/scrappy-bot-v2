@@ -12,7 +12,6 @@ export default new app.Command({
       required: true,
       missingErrorMessage: "Please provide the user id of the wanted dressing !"
     },
-    
   ],
   async run(message) {
 
