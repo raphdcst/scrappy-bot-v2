@@ -51,6 +51,7 @@
     "boxen": "^7.0.0",
     "chalk": "^5.0.1",
     "dayjs": "^1.11.3",
+    "del": "^6.1.1",
     "dirname-filename-esm": "^1.1.1",
     "discord.js": "^14.15.2",
     "dotenv": "^16.0.1",
@@ -67,7 +68,6 @@
     "tims": "^2.1.0",
     "types-package-json": "^2.0.39",
     "yargs-parser": "^21.0.1",
-    "del": "^6.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -83,9 +83,14 @@
     "@types/vinyl-paths": "^0.0.31",
     "@types/ws": "^8.5.3",
     "@types/yargs-parser": "^21.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
     "del": "^6.1.1",
     "discord-api-types": "^0.36.1",
     "esbuild": "^0.19.5",
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.29.1",
     "esm": "^3.2.25",
     "fancy-log": "^2.0.0",
     "git-commit-info": "^2.0.1",
@@ -93,19 +98,15 @@
     "gulp-esbuild": "^0.11.2",
     "gulp-filter": "^7.0.0",
     "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.4",
     "nodemon": "^2.0.19",
     "typescript": "^5.4.0-beta",
-    "vinyl-paths": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
-    "eslint": "^8.57.0",
-    "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-import": "^2.29.1",
-    "gulp-replace": "^1.1.4"
+    "vinyl-paths": "^4.0.0"
   },
   "engines": {
     "node": ">=20.x.x",
     "npm": ">=9.x.x",
     "git": ">=2.x.x"
-  }
+  },
+  "packageManager": "yarn@4.3.1"
 }
